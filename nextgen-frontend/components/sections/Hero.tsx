@@ -11,9 +11,10 @@ const HeroParticles = dynamic(
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden pt-24">
+    <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-24 sm:min-h-screen">
       <HeroParticles />
       <div className="absolute inset-0 spotlight" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-52 bg-gradient-to-b from-transparent via-[#050510]/70 to-[#050510]" />
       <div className="section-shell relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
@@ -24,19 +25,19 @@ export function Hero() {
           <p className="mb-3 text-sm tracking-[0.2em] text-cyan-300">
             NEXTGEN WEB & AI LABS
           </p>
-          <h1 className="font-heading text-4xl font-bold leading-tight sm:text-6xl">
+          <h1 className="font-heading text-[clamp(2rem,9vw,3.75rem)] font-bold leading-[1.05]">
             We Build Intelligent Digital Products
           </h1>
-          <p className="mx-auto mt-5 max-w-3xl text-base text-textSecondary sm:text-xl">
+          <p className="mx-auto mt-5 max-w-3xl px-2 text-[clamp(0.95rem,3.8vw,1.25rem)] text-textSecondary sm:px-0">
             Full-Stack Development. AI Integration. Cloud and DevOps for startups and
             enterprises that want to move fast.
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <a href="#projects">
-              <GlowButton>Explore Our Work</GlowButton>
+              <GlowButton className="w-56 sm:w-auto">Explore Our Work</GlowButton>
             </a>
             <a href="#contact">
-              <GlowButton className="border-violet-300/40 bg-violet-500/10">
+              <GlowButton className="w-56 border-violet-300/40 bg-violet-500/10 sm:w-auto">
                 Let&apos;s Talk
               </GlowButton>
             </a>

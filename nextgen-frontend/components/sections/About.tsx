@@ -19,7 +19,8 @@ const stats = [
 
 export function About() {
   return (
-    <section id="about" className="section-shell">
+    <section id="about" className="section-shell relative">
+      <div className="pointer-events-none absolute inset-x-0 -top-16 h-20 bg-gradient-to-b from-transparent to-[#050510]" />
       <SectionTitle title="Who We Are" />
       <div className="grid gap-6 md:grid-cols-2">
         <motion.div

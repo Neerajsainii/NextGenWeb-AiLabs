@@ -10,14 +10,14 @@ export function Testimonials() {
     <section className="section-shell">
       <SectionTitle title="Client Reviews" subtitle="What clients say about working with us." />
       <motion.div
-        className="flex gap-4 overflow-x-auto pb-4"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
         drag="x"
         dragConstraints={{ left: -320, right: 0 }}
       >
         {testimonials.map((item) => (
           <article
             key={item.id}
-            className="glass-card min-w-[300px] max-w-[300px] p-5 sm:min-w-[340px] sm:max-w-[340px]"
+            className="glass-card min-w-[85vw] max-w-[85vw] snap-center p-5 sm:min-w-[340px] sm:max-w-[340px]"
           >
             <div className="flex items-center justify-between">
               <div>

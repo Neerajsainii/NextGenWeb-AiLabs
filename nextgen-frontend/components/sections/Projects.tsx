@@ -19,12 +19,12 @@ export function Projects() {
   return (
     <section id="projects" className="section-shell">
       <SectionTitle title="Projects" subtitle="Selected work across AI, SaaS, and cloud." />
-      <div className="mb-6 flex flex-wrap justify-center gap-2">
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center sm:overflow-visible">
         {filters.map((filter) => (
           <button
             key={filter}
             onClick={() => setActiveFilter(filter)}
-            className={`rounded-full px-4 py-1.5 text-sm transition ${
+            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm transition ${
               activeFilter === filter
                 ? "bg-cyan-300/20 text-cyan-200"
                 : "bg-white/5 text-textSecondary hover:bg-white/10"
@@ -50,6 +50,17 @@ export function Projects() {
               <p className="text-xs text-cyan-300">{project.category}</p>
               <h3 className="mt-2 font-heading text-lg">{project.title}</h3>
               <p className="mt-3 text-sm text-textSecondary">{project.description}</p>
+              {project.githubUrl ? (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(event) => event.stopPropagation()}
+                  className="mt-4 inline-block text-xs text-cyan-300 underline-offset-2 hover:underline"
+                >
+                  View on GitHub
+                </a>
+              ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
                   <span
@@ -94,6 +105,16 @@ export function Projects() {
                   </span>
                 ))}
               </div>
+              {selected.githubUrl ? (
+                <a
+                  href={selected.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-block text-sm text-cyan-300 underline-offset-2 hover:underline"
+                >
+                  Open GitHub Repository
+                </a>
+              ) : null}
               <button
                 className="mt-6 rounded-md border border-white/15 px-4 py-2 text-sm hover:bg-white/5"
                 onClick={() => setSelected(null)}
