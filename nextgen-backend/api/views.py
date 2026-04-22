@@ -18,12 +18,22 @@ class ContactSubmissionCreateView(APIView):
         serializer.is_valid(raise_exception=True)
         contact = serializer.save()
 
-        send_contact_notification(
-            name=contact.name,
-            email=contact.email,
-            subject=contact.subject,
-            message=contact.message,
-        )
+        try:
+            send_contact_notification(
+                name=contact.name,
+                email=contact.email,
+                subject=contact.subject,
+                message=contact.message,
+            )
+        except Exception:
+            # Form is already persisted; returning explicit delivery status helps debugging SMTP setup.
+            return Response(
+                {
+                    "success": False,
+                    "message": "Message saved, but email delivery failed. Check SMTP settings."
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         return Response(
             {"success": True, "message": "We'll get back to you within 24 hours!"},
