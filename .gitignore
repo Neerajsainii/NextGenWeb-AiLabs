@@ -1,0 +1,13 @@
+# Frontend
+nextgen-frontend/node_modules/
+nextgen-frontend/.next/
+nextgen-frontend/.env.local
+
+# Backend
+nextgen-backend/.venv/
+nextgen-backend/__pycache__/
+nextgen-backend/**/*.pyc
+nextgen-backend/.env
+nextgen-backend/db.sqlite3
+nextgen-backend/media/
+nextgen-backend/staticfiles/
