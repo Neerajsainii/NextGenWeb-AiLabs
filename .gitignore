@@ -8,6 +8,7 @@ nextgen-backend/.venv/
 nextgen-backend/__pycache__/
 nextgen-backend/**/*.pyc
 nextgen-backend/.env
+nextgen-backend/.env.example
 nextgen-backend/db.sqlite3
 nextgen-backend/media/
 nextgen-backend/staticfiles/
