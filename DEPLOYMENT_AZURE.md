@@ -16,6 +16,9 @@ Secrets:
 Variables:
 - `AZURE_WEBAPP_NAME` (example: `next-backend`)
 
+Alternative:
+- You can set `AZURE_WEBAPP_NAME` as a Secret instead of Variable.
+
 ## 2) Frontend (Azure Static Web Apps)
 
 App source path in workflow:
