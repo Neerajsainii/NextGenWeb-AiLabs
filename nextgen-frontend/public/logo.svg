@@ -1,7 +1,0 @@
-<svg width="256" height="64" viewBox="0 0 256 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="256" height="64" rx="10" fill="#050510"/>
-  <path d="M24 48V16L48 40V16" stroke="#00F5FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="42" cy="20" r="3" fill="#00F5FF"/>
-  <circle cx="30" cy="34" r="3" fill="#00F5FF"/>
-  <text x="62" y="39" fill="#F0F4FF" font-size="18" font-family="Arial, sans-serif">NextGen</text>
-</svg>

@@ -19,10 +19,7 @@ export function Navbar() {
     <header className="fixed left-0 top-4 z-40 w-full px-4 sm:px-8">
       <GlassCard className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="font-heading text-xs font-semibold tracking-wide sm:text-base"
-          >
+          <Link href="/" className="font-heading text-xs font-semibold tracking-wide sm:text-base">
             NextGen Web & AI Labs
           </Link>
           <button

@@ -1,14 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
-
-const FloatingOrb = dynamic(
-  () => import("@/components/three/FloatingOrb").then((mod) => mod.FloatingOrb),
-  { ssr: false }
-);
 
 const stats = [
   { label: "Projects Delivered", value: 50, suffix: "+" },
@@ -52,7 +46,18 @@ export function About() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
         >
-          <FloatingOrb />
+          <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-[#02020b] sm:h-72">
+            <video
+              className="absolute left-1/2 top-1/2 h-auto w-auto max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 -rotate-90 object-contain"
+              src="/log.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(2,2,12,0)_38%,rgba(2,2,12,0.96)_100%)]" />
+          </div>
         </motion.div>
       </div>
     </section>
