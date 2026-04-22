@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
 import { submitContact } from "@/lib/api";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -41,8 +42,13 @@ export function Contact({ standalone = false }: ContactProps) {
       } else {
         toast.error("Submission failed. Please try again.");
       }
-    } catch {
-      toast.error("Unable to send message right now.");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const apiMessage = error.response?.data?.message;
+        toast.error(apiMessage ?? "Unable to send message right now.");
+      } else {
+        toast.error("Unable to send message right now.");
+      }
     } finally {
       setLoading(false);
     }
@@ -55,9 +61,9 @@ export function Contact({ standalone = false }: ContactProps) {
         <div>
           <h3 className="font-heading text-xl">Get in touch</h3>
           <p className="mt-4 text-sm text-textSecondary">
-            hello@nextgenwebailabs.com
+            nextgenwebailabs@gmail.com
             <br />
-            +91 XXXXX XXXXX
+            +91 63759 09873
             <br />
             Alwar, Rajasthan, India
           </p>

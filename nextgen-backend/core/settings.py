@@ -90,9 +90,9 @@ EMAIL_PORT = config("EMAIL_PORT", cast=int, default=587)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="hello@nextgenwebailabs.com")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="nextgenwebailabs@gmail.com")
 CONTACT_RECEIVER_EMAIL = config(
-    "CONTACT_RECEIVER_EMAIL", default="hello@nextgenwebailabs.com"
+    "CONTACT_RECEIVER_EMAIL", default="nextgenwebailabs@gmail.com"
 )
 
 REST_FRAMEWORK = {
