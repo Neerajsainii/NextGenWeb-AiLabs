@@ -4,7 +4,7 @@ export function Footer() {
       <div className="section-shell py-10">
         <div className="glass-card grid gap-8 p-8 md:grid-cols-3">
           <div>
-            <h3 className="font-heading text-lg">NextGen Web & AI Labs</h3>
+            <h3 className="font-heading text-lg">NextGen Web AI Labs</h3>
             <p className="mt-2 text-sm text-textSecondary">
               Engineering the Future, One Pixel at a Time.
             </p>
@@ -23,7 +23,7 @@ export function Footer() {
           </div>
         </div>
         <p className="mt-6 text-center text-xs text-textSecondary">
-          Copyright 2025 NextGen Web & AI Labs. Privacy Policy. Terms.
+          Copyright 2025 NextGen Web AI Labs. Privacy Policy. Terms.
         </p>
       </div>
     </footer>

@@ -19,7 +19,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "NextGen Web & AI Labs",
+  title: "NextGen Web AI Labs",
   description:
     "AI integration, SaaS development, full-stack engineering, and cloud-native solutions."
 };

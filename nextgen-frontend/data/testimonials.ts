@@ -13,7 +13,7 @@ export const testimonials: TestimonialItem[] = [
     name: "Arjun Mehta",
     company: "LexAI Ventures",
     review:
-      "NextGen Web & AI Labs transformed our legal workflow with their AI search tool.",
+      "NextGen Web AI Labs transformed our legal workflow with their AI search tool.",
     initials: "AM",
     rating: 5
   },

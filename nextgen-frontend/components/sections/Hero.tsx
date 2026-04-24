@@ -23,7 +23,7 @@ export function Hero() {
           className="mx-auto max-w-4xl text-center"
         >
           <p className="mb-3 text-sm tracking-[0.2em] text-cyan-300">
-            NEXTGEN WEB & AI LABS
+            NEXTGEN WEB AI LABS
           </p>
           <h1 className="font-heading text-[clamp(2rem,9vw,3.75rem)] font-bold leading-[1.05]">
             We Build Intelligent Digital Products
