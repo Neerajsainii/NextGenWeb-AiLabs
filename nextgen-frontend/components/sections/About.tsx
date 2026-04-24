@@ -24,7 +24,7 @@ export function About() {
           viewport={{ once: true, amount: 0.3 }}
         >
           <p className="text-textSecondary">
-            NextGen Web & AI Labs is a forward-thinking software company specializing in
+            NextGen Web AI Labs is a forward-thinking software company specializing in
             AI-powered SaaS platforms, full-stack web applications, and cloud-native
             solutions. We partner with startups, SMEs, and enterprises to ship fast and
             scale smart.

@@ -20,7 +20,7 @@ export function Navbar() {
       <GlassCard className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="font-heading text-xs font-semibold tracking-wide sm:text-base">
-            NextGen Web & AI Labs
+            NextGen Web AI Labs
           </Link>
           <button
             type="button"
