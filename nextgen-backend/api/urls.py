@@ -15,5 +15,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("contact/", ContactSubmissionCreateView.as_view(), name="contact-submit"),
     path("services/", ServicesListView.as_view(), name="services-list"),
-    path("testimonials/", TestimonialListView.as_view(), name="testimonials-list"),
+    # path("testimonials/", TestimonialListView.as_view(), name="testimonials-list"),
 ]

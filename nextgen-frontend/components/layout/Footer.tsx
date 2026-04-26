@@ -18,12 +18,12 @@ export function Footer() {
           <div>
             <h4 className="font-semibold">Company</h4>
             <p className="mt-2 text-sm text-textSecondary">
-              Contact: hello@nextgenwebailabs.com
+              Contact: nextgenwebailabs@gmail.com
             </p>
           </div>
         </div>
         <p className="mt-6 text-center text-xs text-textSecondary">
-          Copyright 2025 NextGen Web AI Labs. Privacy Policy. Terms.
+          Copyright 2026 NextGen Web AI Labs. Privacy Policy. Terms.
         </p>
       </div>
     </footer>

@@ -4,7 +4,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Projects } from "@/components/sections/Projects";
 import { Services } from "@/components/sections/Services";
 import { TechStack } from "@/components/sections/TechStack";
-import { Testimonials } from "@/components/sections/Testimonials";
+// import { Testimonials } from "@/components/sections/Testimonials";
 import { WhyUs } from "@/components/sections/WhyUs";
 
 export default function HomePage() {
@@ -15,7 +15,7 @@ export default function HomePage() {
       <Services />
       <TechStack />
       <Projects />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <WhyUs />
       <Contact />
     </>
