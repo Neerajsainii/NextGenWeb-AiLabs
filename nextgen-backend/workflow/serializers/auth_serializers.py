@@ -16,10 +16,11 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
 class EmployeeUserSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source="employee_profile.role")
     account_status = serializers.CharField(source="employee_profile.account_status")
+    is_suspend = serializers.BooleanField(source="employee_profile.is_suspend")
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name", "role", "account_status"]
+        fields = ["id", "username", "email", "first_name", "last_name", "role", "account_status", "is_suspend"]
 
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
@@ -136,11 +137,22 @@ class EmployeeStatusUpdateSerializer(serializers.ModelSerializer):
         if "role" in profile_data:
             profile.role = profile_data["role"]
         if "account_status" in profile_data:
-            profile.account_status = profile_data["account_status"]
-            profile.is_active_employee = profile.account_status != EmployeeStatus.BLOCK
-            instance.is_active = profile.account_status != EmployeeStatus.BLOCK
+            new_status = profile_data["account_status"]
+            profile.account_status = new_status
+            if new_status == EmployeeStatus.BLOCK:
+                profile.is_active_employee = False
+                profile.is_suspend = False
+                instance.is_active = False
+            elif new_status == EmployeeStatus.SUSPEND:
+                profile.is_active_employee = True
+                profile.is_suspend = True
+                instance.is_active = True
+            else:  # ACTIVE
+                profile.is_active_employee = True
+                profile.is_suspend = False
+                instance.is_active = True
             instance.save(update_fields=["is_active"])
-        profile.save(update_fields=["role", "account_status", "is_active_employee", "updated_at"])
+        profile.save(update_fields=["role", "account_status", "is_active_employee", "is_suspend", "updated_at"])
 
         return instance
 
@@ -208,19 +220,24 @@ class LoginSerializer(serializers.Serializer):
 
         # Resolve user by username or email
         lookup_user = (
-            User.objects.filter(username=identifier).select_related("employee_profile").first()
-            or User.objects.filter(email__iexact=identifier).select_related("employee_profile").first()
+            User.objects.filter(username=identifier).first()
+            or User.objects.filter(email__iexact=identifier).first()
         )
 
         if lookup_user is not None:
             lookup_profile = getattr(lookup_user, "employee_profile", None)
-            if (
-                lookup_profile is not None
-                and lookup_profile.account_status == EmployeeStatus.SUSPEND
-                and not lookup_user.is_active
-            ):
-                lookup_user.is_active = True
-                lookup_user.save(update_fields=["is_active"])
+            if lookup_profile is not None and lookup_profile.account_status == EmployeeStatus.SUSPEND:
+                # Ensure is_active and is_active_employee are correct for suspended users
+                changed = False
+                if not lookup_user.is_active:
+                    lookup_user.is_active = True
+                    changed = True
+                if changed:
+                    lookup_user.save(update_fields=["is_active"])
+                if not lookup_profile.is_active_employee or not lookup_profile.is_suspend:
+                    lookup_profile.is_active_employee = True
+                    lookup_profile.is_suspend = True
+                    lookup_profile.save(update_fields=["is_active_employee", "is_suspend", "updated_at"])
 
         # Django's authenticate() uses username; resolve actual username first
         auth_username = lookup_user.username if lookup_user else identifier
@@ -244,7 +261,7 @@ class LoginSerializer(serializers.Serializer):
 
         if profile.account_status == EmployeeStatus.BLOCK:
             raise serializers.ValidationError("Your account has been blocked. Contact HR.")
-        if not profile.is_active_employee:
+        if profile.account_status not in {EmployeeStatus.ACTIVE, EmployeeStatus.SUSPEND}:
             raise serializers.ValidationError("Employee account not active.")
 
         if profile.role != attrs.get("role"):

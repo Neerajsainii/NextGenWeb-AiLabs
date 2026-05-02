@@ -114,11 +114,13 @@ class EmployeeDirectoryView(APIView):
     permission_classes = [IsAuthenticatedEmployee, IsProjectManagerOrAdmin]
 
     def get(self, request: Request) -> Response:
-        developers = User.objects.filter(
-            employee_profile__role=EmployeeRole.DEVELOPER,
-            employee_profile__account_status=EmployeeStatus.ACTIVE,
-            is_active=True,
-        ).select_related("employee_profile")
+        from workflow.models import EmployeeProfile
+        dev_user_ids = list(
+            EmployeeProfile.objects
+            .filter(role=EmployeeRole.DEVELOPER, account_status=EmployeeStatus.ACTIVE)
+            .values_list("user_id", flat=True)
+        )
+        developers = User.objects.filter(id__in=dev_user_ids, is_active=True)
         return Response(
             {"success": True, "results": EmployeeUserSerializer(developers, many=True).data},
             status=status.HTTP_200_OK,
@@ -129,23 +131,26 @@ class EmployeeUserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedEmployee, IsAdminOrHr]
 
     def get_queryset(self):
+        from workflow.models import EmployeeProfile
         user = self.request.user
         role = user.employee_profile.role
 
-        base_queryset = User.objects.filter(employee_profile__isnull=False).select_related("employee_profile")
         if role == EmployeeRole.ADMIN:
-            return base_queryset.exclude(employee_profile__role=EmployeeRole.ADMIN)
-
-        if role == EmployeeRole.HR:
-            return base_queryset.filter(
-                employee_profile__role__in=[
-                    EmployeeRole.SALES,
-                    EmployeeRole.PROJECT_MANAGER,
-                    EmployeeRole.DEVELOPER,
-                ]
+            allowed_ids = list(
+                EmployeeProfile.objects
+                .exclude(role=EmployeeRole.ADMIN)
+                .values_list("user_id", flat=True)
             )
+        elif role == EmployeeRole.HR:
+            allowed_ids = list(
+                EmployeeProfile.objects
+                .filter(role__in=[EmployeeRole.SALES, EmployeeRole.PROJECT_MANAGER, EmployeeRole.DEVELOPER])
+                .values_list("user_id", flat=True)
+            )
+        else:
+            return User.objects.none()
 
-        return base_queryset.none()
+        return User.objects.filter(id__in=allowed_ids).select_related()
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):

@@ -25,6 +25,7 @@ const roleOptions: { label: string; value: EmployeeRole }[] = [
 export default function EmployeeLoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [blockedError, setBlockedError] = useState(false);
   const [formState, setFormState] = useState({
     identifier: "",
     password: "",
@@ -56,8 +57,9 @@ export default function EmployeeLoginPage() {
         (apiError?.errors ? Object.values(apiError.errors).join(", ") : "Login failed. Verify credentials and selected role.");
 
       if (message.toLowerCase().includes("blocked")) {
-        window.alert("Your account has been blocked. Please contact HR.");
+        setBlockedError(true);
       } else {
+        setBlockedError(false);
         toast.error(message);
       }
     } finally {
@@ -71,6 +73,15 @@ export default function EmployeeLoginPage() {
         title="Employee Login"
         subtitle="Secure internal access for admin, HR, sales, project managers, and developers"
       />
+
+      {blockedError && (
+        <div className="mx-auto mb-6 max-w-xl rounded-xl border border-red-400/40 bg-red-500/10 p-4 text-center">
+          <p className="font-semibold text-red-300">Account Blocked</p>
+          <p className="mt-1 text-sm text-red-200/80">
+            Your account has been blocked. Please contact HR to resolve this.
+          </p>
+        </div>
+      )}
 
       <GlassCard className="mx-auto w-full max-w-xl p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="grid gap-4">

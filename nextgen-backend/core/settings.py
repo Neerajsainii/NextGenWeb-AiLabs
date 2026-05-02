@@ -1,7 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
 
-import dj_database_url
 from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,10 +55,19 @@ WSGI_APPLICATION = "core.wsgi.application"
 ASGI_APPLICATION = "core.asgi.application"
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db_auth.sqlite3",
+    },
+    "mongodb": {
+        "ENGINE": "django_mongodb_backend",
+        "NAME": config("MONGODB_DB_NAME", default="nextgen_wailabs"),
+        "HOST": config("MONGODB_URI"),
+        "OPTIONS": {},
+    },
 }
+
+DATABASE_ROUTERS = ["workflow.router.WorkflowRouter"]
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

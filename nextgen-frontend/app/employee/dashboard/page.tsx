@@ -18,6 +18,8 @@ export default function EmployeeDashboardPage() {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
+  const isSuspended = user?.is_suspend === true;
+
   const metricsList = useMemo(
     () => Object.entries(metrics).map(([key, value]) => ({ label: key.replaceAll("_", " "), value })),
     [metrics]
@@ -54,7 +56,7 @@ export default function EmployeeDashboardPage() {
         subtitle={`Welcome back, ${user.first_name || user.username} · ${user.role.replace("_", " ")}`}
       />
 
-      {user.account_status === "suspend" && (
+      {isSuspended && (
         <GlassCard className="mb-6 border border-amber-400/40 bg-amber-500/10 p-4 text-sm text-amber-200">
           Your account is suspended. You have read-only access. Contact HR.
         </GlassCard>

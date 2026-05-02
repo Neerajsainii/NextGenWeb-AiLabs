@@ -38,7 +38,7 @@ export default function EmployeesPage() {
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
-  const isSuspended = user?.account_status === "suspend";
+  const isSuspended = user?.is_suspend === true;
   const creatableRoles = useMemo(() => (user ? getCreatableRoles(user.role) : []), [user]);
 
   useEffect(() => {

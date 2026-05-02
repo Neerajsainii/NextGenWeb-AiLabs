@@ -52,7 +52,7 @@ export default function LeadsPage() {
   const [form, setForm] = useState(emptyLead);
 
   const canCreate = user?.role === "sales" || user?.role === "admin";
-  const isSuspended = user?.account_status === "suspend";
+  const isSuspended = user?.is_suspend === true;
 
   useEffect(() => {
     const u = getStoredEmployeeUser();

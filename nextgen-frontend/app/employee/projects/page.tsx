@@ -37,7 +37,7 @@ export default function ProjectsPage() {
   const [taskForm, setTaskForm] = useState(emptyTask);
   const [activeTab, setActiveTab] = useState<"projects" | "tasks">("projects");
 
-  const isSuspended = user?.account_status === "suspend";
+  const isSuspended = user?.is_suspend === true;
 
   useEffect(() => {
     const u = getStoredEmployeeUser();

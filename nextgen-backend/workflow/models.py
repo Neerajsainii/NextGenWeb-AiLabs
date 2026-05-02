@@ -48,9 +48,10 @@ class TaskPriority(models.TextChoices):
 
 
 class EmployeeProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee_profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee_profile", db_constraint=False)
     role = models.CharField(max_length=30, choices=EmployeeRole.choices)
     is_active_employee = models.BooleanField(default=True)
+    is_suspend = models.BooleanField(default=False)
     account_status = models.CharField(
         max_length=20,
         choices=EmployeeStatus.choices,

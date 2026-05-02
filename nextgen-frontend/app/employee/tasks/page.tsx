@@ -22,7 +22,7 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isSuspended = user?.account_status === "suspend";
+  const isSuspended = user?.is_suspend === true;
 
   useEffect(() => {
     const u = getStoredEmployeeUser();

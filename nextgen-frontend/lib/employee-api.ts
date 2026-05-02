@@ -13,6 +13,7 @@ export type EmployeeUser = {
   last_name: string;
   role: EmployeeRole;
   account_status: EmployeeAccountStatus;
+  is_suspend: boolean;
 };
 
 export type LeadStatus = "new" | "qualified" | "negotiation" | "won" | "lost";
