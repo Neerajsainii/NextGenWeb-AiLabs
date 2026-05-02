@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="border-t border-white/10">
@@ -12,18 +14,35 @@ export function Footer() {
           <div>
             <h4 className="font-semibold">Services</h4>
             <p className="mt-2 text-sm text-textSecondary">
-              AI Integration, SaaS, Full Stack, Cloud & DevOps
+              AI Integration, SaaS, Full Stack, Cloud &amp; DevOps
             </p>
           </div>
           <div>
             <h4 className="font-semibold">Company</h4>
-            <p className="mt-2 text-sm text-textSecondary">
-              Contact: nextgenwebailabs@gmail.com
-            </p>
+            <ul className="mt-2 space-y-1 text-sm text-textSecondary">
+              <li>
+                <a
+                  href="mailto:nextgenwebailabs@gmail.com"
+                  className="transition hover:text-accentCyan"
+                >
+                  nextgenwebailabs@gmail.com
+                </a>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="transition hover:text-accentCyan">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms-of-service" className="transition hover:text-accentCyan">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
         <p className="mt-6 text-center text-xs text-textSecondary">
-          Copyright 2026 NextGen Web AI Labs. Privacy Policy. Terms.
+          &copy; {new Date().getFullYear()} NextGen Web AI Labs. All rights reserved.
         </p>
       </div>
     </footer>
