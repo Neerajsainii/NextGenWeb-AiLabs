@@ -8,6 +8,7 @@ urlpatterns = [
     path("", lambda request: JsonResponse({"status": "ok", "service": "nextgen-backend"})),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    path("api/workflow/", include("workflow.urls")),
 ]
 
 if settings.DEBUG:
