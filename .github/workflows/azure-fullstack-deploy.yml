@@ -66,6 +66,8 @@ jobs:
           api_location: ""
           output_location: ""
           app_build_command: "npm run build"
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
   deploy_backend:
     name: Deploy Backend (Azure Web App)
