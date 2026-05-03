@@ -79,7 +79,7 @@ export default function LeadsPage() {
         contact_email: form.contact_email,
         contact_phone: form.contact_phone,
         requirements: form.requirements,
-        estimated_value: form.estimated_value ? Number(form.estimated_value) : undefined,
+        estimated_value: form.estimated_value || undefined
       });
       setForm(emptyLead);
       const d = await fetchLeads();
