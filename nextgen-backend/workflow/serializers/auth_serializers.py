@@ -14,6 +14,7 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
 
 
 class EmployeeUserSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="_id", read_only=True)
     role = serializers.CharField(source="employee_profile.role")
     account_status = serializers.CharField(source="employee_profile.account_status")
     is_suspend = serializers.BooleanField(source="employee_profile.is_suspend")
@@ -21,7 +22,8 @@ class EmployeeUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "first_name", "last_name", "role", "account_status", "is_suspend"]
-
+    def get_id(self, obj):
+        return str(obj.id)
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=EmployeeRole.choices, write_only=True)
@@ -241,11 +243,14 @@ class LoginSerializer(serializers.Serializer):
 
         # Django's authenticate() uses username; resolve actual username first
         auth_username = lookup_user.username if lookup_user else identifier
-        user = authenticate(
-            request=request,
-            username=auth_username,
-            password=attrs.get("password"),
-        )
+        user = lookup_user
+
+        if user is None:
+            raise serializers.ValidationError("Invalid username/email or password.")
+
+        if not user.check_password(attrs.get("password")):
+            raise serializers.ValidationError("Invalid username/email or password.")
+
         if user is None:
             if lookup_user is not None:
                 lookup_profile = getattr(lookup_user, "employee_profile", None)

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django_mongodb_backend.fields import ObjectIdAutoField
 
 User = get_user_model()
 
@@ -48,7 +49,8 @@ class TaskPriority(models.TextChoices):
 
 
 class EmployeeProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee_profile", db_constraint=False)
+    id = ObjectIdAutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee_profile")
     role = models.CharField(max_length=30, choices=EmployeeRole.choices)
     is_active_employee = models.BooleanField(default=True)
     is_suspend = models.BooleanField(default=False)
@@ -75,6 +77,7 @@ class EmployeeProfile(models.Model):
 
 
 class Lead(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     title = models.CharField(max_length=255)
     company_name = models.CharField(max_length=255)
     contact_name = models.CharField(max_length=255)
@@ -103,6 +106,7 @@ class Lead(models.Model):
 
 
 class WorkflowProject(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     source_lead = models.OneToOneField(
@@ -154,6 +158,7 @@ class WorkflowProject(models.Model):
 
 
 class Milestone(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     project = models.ForeignKey(WorkflowProject, on_delete=models.CASCADE, related_name="milestones")
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -171,6 +176,7 @@ class Milestone(models.Model):
 
 
 class Task(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     project = models.ForeignKey(WorkflowProject, on_delete=models.CASCADE, related_name="tasks")
     milestone = models.ForeignKey(
         Milestone,

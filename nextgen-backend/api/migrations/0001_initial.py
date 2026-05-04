@@ -1,5 +1,6 @@
 # Generated manually for initial project scaffold.
 from django.db import migrations, models
+import django_mongodb_backend.fields
 
 
 class Migration(migrations.Migration):
@@ -11,7 +12,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ContactSubmission",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", django_mongodb_backend.fields.ObjectIdAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("name", models.CharField(max_length=100)),
                 ("email", models.EmailField(max_length=254)),
                 ("subject", models.CharField(max_length=200)),
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Project",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", django_mongodb_backend.fields.ObjectIdAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("title", models.CharField(max_length=200)),
                 ("category", models.CharField(max_length=100)),
                 ("description", models.TextField()),
@@ -40,7 +41,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Testimonial",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", django_mongodb_backend.fields.ObjectIdAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("client_name", models.CharField(max_length=100)),
                 ("company", models.CharField(max_length=100)),
                 ("review", models.TextField()),

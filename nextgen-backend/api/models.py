@@ -1,7 +1,9 @@
 from django.db import models
+from django_mongodb_backend.fields import ObjectIdAutoField
 
 
 class ContactSubmission(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     subject = models.CharField(max_length=200)
@@ -17,6 +19,7 @@ class ContactSubmission(models.Model):
 
 
 class Project(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
     description = models.TextField()
@@ -35,6 +38,7 @@ class Project(models.Model):
 
 
 class Testimonial(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
     client_name = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     review = models.TextField()
