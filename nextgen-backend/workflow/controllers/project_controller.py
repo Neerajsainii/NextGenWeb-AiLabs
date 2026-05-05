@@ -24,8 +24,10 @@ class WorkflowProjectViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
+        if user.employee_profile.role == EmployeeRole.ADMIN:
+            serializer.save(sales_owner=user, project_manager=user)
+            return
         if user.employee_profile.role == EmployeeRole.PROJECT_MANAGER:
             serializer.save(project_manager=user)
             return
-
         serializer.save()

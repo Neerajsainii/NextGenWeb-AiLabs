@@ -27,7 +27,7 @@ function getEmployeeNavLinks(role: string) {
     links.push({ href: "/employee/leads", label: "Leads" });
   if (["admin", "project_manager"].includes(role))
     links.push({ href: "/employee/projects", label: "Projects" });
-  if (["admin", "developer"].includes(role))
+  if (["admin", "project_manager", "developer"].includes(role))
     links.push({ href: "/employee/tasks", label: "Tasks" });
   if (["admin", "hr"].includes(role))
     links.push({ href: "/employee/employees", label: "Employees" });
@@ -69,7 +69,7 @@ export function Navbar() {
 
           {/* Logo */}
           <Link
-            href={isEmployeeRoute && employeeUser ? "/employee/dashboard" : "/"}
+            href={isEmployeeRoute && employeeUser ? "/" : "/"}
             className="font-heading text-xs font-semibold tracking-wide sm:text-base"
           >
             NextGen Web AI Labs
@@ -92,9 +92,8 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition hover:text-accentCyan ${
-                    pathname === link.href ? "text-textPrimary" : ""
-                  }`}
+                  className={`transition hover:text-accentCyan ${pathname === link.href ? "text-textPrimary" : ""
+                    }`}
                 >
                   {link.label}
                 </Link>

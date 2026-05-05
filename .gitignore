@@ -12,3 +12,4 @@ nextgen-backend/.env.example
 nextgen-backend/db.sqlite3
 nextgen-backend/media/
 nextgen-backend/staticfiles/
+nextgen-backend/nextgen-backend/workflow/management/commands/create_admin.py
