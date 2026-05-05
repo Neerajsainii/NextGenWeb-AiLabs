@@ -3,10 +3,18 @@ from rest_framework import serializers
 
 from workflow.models import EmployeeRole, Lead, LeadStatus
 from workflow.services.workflow_service import create_project_from_negotiation_lead
-
+from bson import ObjectId
 
 class LeadSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    owner = serializers.CharField(source="owner.id", read_only=True)
     owner_username = serializers.CharField(source="owner.username", read_only=True)
+
+    def get_id(self, obj):
+        return str(obj.id)
+
+    def get_owner(self, obj):
+        return str(obj.owner.id)
 
     class Meta:
         model = Lead

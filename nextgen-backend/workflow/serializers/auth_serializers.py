@@ -14,7 +14,7 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
 
 
 class EmployeeUserSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="_id", read_only=True)
+    id = serializers.CharField(read_only=True)
     role = serializers.CharField(source="employee_profile.role")
     account_status = serializers.CharField(source="employee_profile.account_status")
     is_suspend = serializers.BooleanField(source="employee_profile.is_suspend")
@@ -54,23 +54,26 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
 
     def validate_role(self, value: str) -> str:
         request = self.context.get("request")
-        if request is None or not request.user.is_authenticated:
+        if request is None or not getattr(request, "user", None) or not request.user.is_authenticated:
             raise serializers.ValidationError("Authenticated creator is required.")
 
         profile = getattr(request.user, "employee_profile", None)
         if profile is None:
             raise serializers.ValidationError("Only employee accounts can create employees.")
 
-        allowed_by_role = {
-            EmployeeRole.ADMIN: {EmployeeRole.HR, EmployeeRole.SALES, EmployeeRole.PROJECT_MANAGER, EmployeeRole.DEVELOPER},
-            EmployeeRole.HR: {EmployeeRole.SALES, EmployeeRole.PROJECT_MANAGER, EmployeeRole.DEVELOPER},
-        }
-        allowed = allowed_by_role.get(profile.role, set())
+        role = str(profile.role)
+        val = str(value)
 
-        if value not in allowed:
+        allowed = set()
+        if role == "admin":
+            allowed = {"hr", "sales", "project_manager", "developer"}
+        elif role == "hr":
+            allowed = {"sales", "project_manager", "developer"}
+
+        if val not in allowed:
             raise serializers.ValidationError("You cannot create this role.")
 
-        return value
+        return val
 
     def create(self, validated_data):
         role = validated_data.pop("role")

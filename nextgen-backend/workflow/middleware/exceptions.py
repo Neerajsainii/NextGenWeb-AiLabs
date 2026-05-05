@@ -20,4 +20,5 @@ def api_exception_handler(exc, context):
             "status_code": response.status_code,
         }
 
+    print("API ERROR:", response.data)
     return response

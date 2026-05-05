@@ -1,9 +1,21 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from workflow.models import Milestone, Task, WorkflowProject
+from workflow.models import Lead, Milestone, Task, WorkflowProject
+
+User = get_user_model()
+
+
+class ObjectIdPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
+    """PrimaryKeyRelatedField that coerces ObjectId PKs to str on serialization."""
+
+    def to_representation(self, value):
+        pk = super().to_representation(value)
+        return str(pk) if pk is not None else None
 
 
 class MilestoneSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
     class Meta:
         model = Milestone
         fields = ["id", "title", "description", "due_date", "is_completed", "order"]
@@ -11,6 +23,8 @@ class MilestoneSerializer(serializers.ModelSerializer):
 
 
 class TaskSummarySerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    assigned_to = serializers.CharField(allow_null=True)
     assigned_to_username = serializers.CharField(source="assigned_to.username", read_only=True)
 
     class Meta:
@@ -19,10 +33,18 @@ class TaskSummarySerializer(serializers.ModelSerializer):
 
 
 class WorkflowProjectSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    source_lead = ObjectIdPrimaryKeyRelatedField(queryset=Lead.objects.all(), required=False, allow_null=True)
+    sales_owner = ObjectIdPrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    project_manager = ObjectIdPrimaryKeyRelatedField(
+        queryset=User.objects.all(), allow_null=True, required=False
+    )
     milestones = MilestoneSerializer(many=True, required=False)
     tasks = TaskSummarySerializer(many=True, read_only=True)
     project_manager_username = serializers.CharField(source="project_manager.username", read_only=True)
     sales_owner_username = serializers.CharField(source="sales_owner.username", read_only=True)
+    source_lead_title = serializers.CharField(source="source_lead.title", read_only=True)
+
 
     class Meta:
         model = WorkflowProject
@@ -31,6 +53,7 @@ class WorkflowProjectSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "source_lead",
+            "source_lead_title",
             "sales_owner",
             "sales_owner_username",
             "project_manager",

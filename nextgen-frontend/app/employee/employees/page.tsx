@@ -37,9 +37,28 @@ export default function EmployeesPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [activeTab, setActiveTab] = useState<"create" | "all">("all");
 
   const isSuspended = user?.is_suspend === true;
   const creatableRoles = useMemo(() => (user ? getCreatableRoles(user.role) : []), [user]);
+
+  const groupedEmployees = useMemo(() => {
+    const groups: Record<string, EmployeeUser[]> = {
+      admin: [],
+      hr: [],
+      sales: [],
+      project_manager: [],
+      developer: [],
+    };
+    employees.forEach(emp => {
+      if (groups[emp.role]) {
+        groups[emp.role].push(emp);
+      } else {
+        groups[emp.role] = [emp];
+      }
+    });
+    return groups;
+  }, [employees]);
 
   useEffect(() => {
     const u = getStoredEmployeeUser();
@@ -70,6 +89,7 @@ export default function EmployeesPage() {
       setForm((p) => ({ ...emptyForm, role: p.role }));
       setEmployees(await fetchEmployees());
       toast.success("Employee created");
+      setActiveTab("all");
     } catch (error) {
       const apiErr = (error as { response?: { data?: { error?: string } } })?.response?.data;
       toast.error(apiErr?.error ?? "Failed to create employee");
@@ -78,7 +98,7 @@ export default function EmployeesPage() {
     }
   }
 
-  async function handleRoleUpdate(id: number, role: EmployeeRole) {
+  async function handleRoleUpdate(id: string, role: EmployeeRole) {
     if (isSuspended) { toast.error("Account suspended."); return; }
     try {
       await updateEmployee(id, { role });
@@ -87,7 +107,7 @@ export default function EmployeesPage() {
     } catch { toast.error("Failed to update role"); }
   }
 
-  async function handleStatusUpdate(id: number, account_status: EmployeeAccountStatus) {
+  async function handleStatusUpdate(id: string, account_status: EmployeeAccountStatus) {
     if (isSuspended) { toast.error("Account suspended."); return; }
     try {
       await updateEmployee(id, { account_status });
@@ -104,6 +124,8 @@ export default function EmployeesPage() {
     );
   }
 
+  const roleTypes = ["admin", "hr", "sales", "project_manager", "developer"] as const;
+
   return (
     <section className="section-shell pt-36 pb-20">
       <SectionTitle
@@ -117,9 +139,26 @@ export default function EmployeesPage() {
         </GlassCard>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Create employee */}
-        <GlassCard className="p-6">
+      {/* Tab bar */}
+      <div className="mb-6 flex gap-2 border-b border-white/10">
+        {(["create", "all"] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            className={`px-5 py-2.5 text-sm font-medium transition ${activeTab === tab
+              ? "border-b-2 border-cyan-300/60 text-textPrimary"
+              : "text-textSecondary hover:text-textPrimary"
+              }`}
+          >
+            {tab === "create" ? "Create Employee" : `All Employees (${employees.length})`}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Create Employee tab ─────────────────────────────────────────── */}
+      {activeTab === "create" && (
+        <GlassCard className="mx-auto max-w-lg p-6">
           <h3 className="mb-4 font-heading text-lg text-textPrimary">
             {user.role === "admin" ? "Create HR / Employee" : "Create Employee"}
           </h3>
@@ -133,10 +172,10 @@ export default function EmployeesPage() {
               </div>
               <input type="password" className="rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-textPrimary outline-none focus:border-cyan-300/60" placeholder="Temporary password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required />
               <div className="grid grid-cols-2 gap-3">
-                <select className="rounded-xl border border-white/15 bg-bgSecondary px-3 py-2.5 text-sm" value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value as EmployeeRole }))}>
-                  {creatableRoles.map((r) => <option key={r} value={r}>{r}</option>)}
+                <select className="rounded-xl border border-white/15 bg-bgSecondary px-3 py-2.5 text-sm text-textPrimary" value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value as EmployeeRole }))}>
+                  {creatableRoles.map((r) => <option key={r} value={r}>{r.replace("_", " ")}</option>)}
                 </select>
-                <select className="rounded-xl border border-white/15 bg-bgSecondary px-3 py-2.5 text-sm" value={form.account_status} onChange={(e) => setForm((p) => ({ ...p, account_status: e.target.value as EmployeeAccountStatus }))}>
+                <select className="rounded-xl border border-white/15 bg-bgSecondary px-3 py-2.5 text-sm text-textPrimary" value={form.account_status} onChange={(e) => setForm((p) => ({ ...p, account_status: e.target.value as EmployeeAccountStatus }))}>
                   {employeeStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
@@ -144,44 +183,64 @@ export default function EmployeesPage() {
             </fieldset>
           </form>
         </GlassCard>
+      )}
 
-        {/* Employee list */}
-        <GlassCard className="p-6">
-          <h3 className="mb-4 font-heading text-lg text-textPrimary">Employee Controls</h3>
+      {/* ── All Employees tab ───────────────────────────────────────────── */}
+      {activeTab === "all" && (
+        <>
           {employees.length === 0 ? (
-            <p className="text-sm text-textSecondary">No employees found.</p>
+            <GlassCard className="p-8 text-center text-sm text-textSecondary">No employees found.</GlassCard>
           ) : (
-            <div className="grid gap-3 max-h-[600px] overflow-y-auto pr-1">
-              {employees.map((emp) => (
-                <div key={emp.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <p className="font-medium text-textPrimary">{emp.username}</p>
-                  <p className="text-xs text-textSecondary">{emp.email}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <select
-                      className="rounded-lg border border-white/15 bg-bgSecondary px-2 py-1 text-xs"
-                      value={emp.role}
-                      disabled={isSuspended}
-                      onChange={(e) => handleRoleUpdate(emp.id, e.target.value as EmployeeRole)}
-                    >
-                      {(user.role === "admin" ? ["hr", "sales", "project_manager", "developer"] : ["sales", "project_manager", "developer"]).map((r) => (
-                        <option key={r} value={r}>{r}</option>
+            <div className="flex flex-col gap-10">
+              {roleTypes.map(role => {
+                const group = groupedEmployees[role];
+                if (!group || group.length === 0) return null;
+                return (
+                  <div key={role}>
+                    <h3 className="mb-4 font-heading text-lg font-semibold text-textPrimary capitalize border-b border-white/10 pb-2">
+                      {role.replace("_", " ")}s
+                    </h3>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {group.map((emp) => (
+                        <div key={emp.id} className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col gap-3 transition hover:border-cyan-300/30 hover:bg-white/[0.08]">
+                          <div>
+                            <p className="font-heading text-base font-semibold text-textPrimary leading-snug">{emp.username}</p>
+                            <p className="text-xs text-textSecondary mt-1">{emp.email}</p>
+                            {(emp.first_name || emp.last_name) && (
+                              <p className="text-xs text-textSecondary mt-1">{emp.first_name} {emp.last_name}</p>
+                            )}
+                          </div>
+                          
+                          <div className="mt-auto pt-3 border-t border-white/10 flex flex-wrap gap-2">
+                            <select
+                              className="flex-1 rounded-lg border border-white/15 bg-bgSecondary px-2 py-1.5 text-xs text-textPrimary outline-none cursor-pointer capitalize"
+                              value={emp.role}
+                              disabled={isSuspended}
+                              onChange={(e) => handleRoleUpdate(emp.id, e.target.value as EmployeeRole)}
+                            >
+                              {(user.role === "admin" ? ["hr", "sales", "project_manager", "developer"] : ["sales", "project_manager", "developer"]).map((r) => (
+                                <option key={r} value={r}>{r.replace("_", " ")}</option>
+                              ))}
+                            </select>
+                            <select
+                              className="flex-1 rounded-lg border border-white/15 bg-bgSecondary px-2 py-1.5 text-xs text-textPrimary outline-none cursor-pointer capitalize"
+                              value={emp.account_status}
+                              disabled={isSuspended}
+                              onChange={(e) => handleStatusUpdate(emp.id, e.target.value as EmployeeAccountStatus)}
+                            >
+                              {employeeStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                          </div>
+                        </div>
                       ))}
-                    </select>
-                    <select
-                      className="rounded-lg border border-white/15 bg-bgSecondary px-2 py-1 text-xs"
-                      value={emp.account_status}
-                      disabled={isSuspended}
-                      onChange={(e) => handleStatusUpdate(emp.id, e.target.value as EmployeeAccountStatus)}
-                    >
-                      {employeeStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                    </select>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-        </GlassCard>
-      </div>
+        </>
+      )}
     </section>
   );
 }

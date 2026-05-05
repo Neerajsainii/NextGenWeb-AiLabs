@@ -6,7 +6,7 @@ export type EmployeeRole = "admin" | "hr" | "sales" | "project_manager" | "devel
 export type EmployeeAccountStatus = "active" | "suspend" | "block";
 
 export type EmployeeUser = {
-  id: number;
+  id: string;
   username: string;
   email: string;
   first_name: string;
@@ -20,7 +20,7 @@ export type LeadStatus = "new" | "qualified" | "negotiation" | "won" | "lost";
 export type TaskStatus = "todo" | "in_progress" | "done";
 
 export type Lead = {
-  id: number;
+  id: string;
   title: string;
   company_name: string;
   contact_name: string;
@@ -29,20 +29,21 @@ export type Lead = {
   requirements: string;
   estimated_value: string | null;
   status: LeadStatus;
-  owner: number;
+  owner: string;
   owner_username: string;
   created_at: string;
   updated_at: string;
 };
 
 export type WorkflowProject = {
-  id: number;
+  id: string;
   name: string;
   description: string;
-  source_lead: number | null;
-  sales_owner: number | null;
+  source_lead: string | null;
+  source_lead_title: string | null;
+  sales_owner: string | null;
   sales_owner_username: string;
-  project_manager: number | null;
+  project_manager: string | null;
   project_manager_username: string;
   status: "planning" | "active" | "on_hold" | "completed" | "cancelled";
   progress_percent: number;
@@ -53,13 +54,13 @@ export type WorkflowProject = {
 };
 
 export type Task = {
-  id: number;
-  project: number;
+  id: string;
+  project: string;
   project_name: string;
-  milestone: number | null;
+  milestone: string | null;
   title: string;
   description: string;
-  assigned_to: number | null;
+  assigned_to: string | null;
   assigned_to_username: string;
   status: TaskStatus;
   priority: "low" | "medium" | "high" | "critical";
@@ -240,7 +241,7 @@ export async function createEmployee(payload: {
   return data as EmployeeUser;
 }
 
-export async function updateEmployee(employeeId: number, payload: Partial<Pick<EmployeeUser, "first_name" | "last_name" | "email" | "role" | "account_status">>) {
+export async function updateEmployee(employeeId: string, payload: Partial<Pick<EmployeeUser, "first_name" | "last_name" | "email" | "role" | "account_status">>) {
   const { data } = await employeeApi.patch(`/auth/employees/${employeeId}/`, payload);
   return data as EmployeeUser;
 }
@@ -260,7 +261,7 @@ export async function createLead(payload: Partial<Lead>) {
   return data as Lead;
 }
 
-export async function updateLead(leadId: number, payload: Partial<Lead>) {
+export async function updateLead(leadId: string, payload: Partial<Lead>) {
   const { data } = await employeeApi.patch(`/leads/${leadId}/`, payload);
   return data as Lead;
 }
@@ -275,7 +276,7 @@ export async function createProject(payload: Partial<WorkflowProject>) {
   return data as WorkflowProject;
 }
 
-export async function updateProject(projectId: number, payload: Partial<WorkflowProject>) {
+export async function updateProject(projectId: string, payload: Partial<WorkflowProject>) {
   const { data } = await employeeApi.patch(`/projects/${projectId}/`, payload);
   return data as WorkflowProject;
 }
@@ -290,7 +291,7 @@ export async function createTask(payload: Partial<Task>) {
   return data as Task;
 }
 
-export async function updateTask(taskId: number, payload: Partial<Task>) {
+export async function updateTask(taskId: string, payload: Partial<Task>) {
   const { data } = await employeeApi.patch(`/tasks/${taskId}/`, payload);
   return data as Task;
 }
@@ -300,7 +301,7 @@ export async function fetchDeveloperTasks() {
   return data as { success: boolean; results: Task[] };
 }
 
-export async function updateDeveloperTask(taskId: number, payload: Partial<Task>) {
+export async function updateDeveloperTask(taskId: string, payload: Partial<Task>) {
   const { data } = await employeeApi.patch(`/developer/tasks/${taskId}/`, payload);
   return data as { success: boolean; task: Task };
 }
